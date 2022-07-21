@@ -1,0 +1,31 @@
+.convertor__select {
+  height: 50px;
+  position: absolute;  
+  right: 0;
+  width: 100px;
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url('../../assets/arrow-down-sign-to-navigate-svgrepo-com.svg');
+  background-repeat: no-repeat;
+  background-position: 90% 50%;
+  background-size: 15px;
+  font-weight: bolder;
+  padding-left: 10px;
+  background-color: rgb(56, 104, 238);
+  cursor: pointer;
+  transition: 0.5s;
+  color: white;
+
+  &:hover {
+    background-color: rgb(75, 121, 247);
+    transition: 0.5s;
+  }
+
+  option {
+    font-weight: bolder;
+    padding-left: 10px;
+    background: white;
+    color: black;
+  }
+}

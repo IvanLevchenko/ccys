@@ -1,0 +1,45 @@
+.App {
+  .chart {
+    width: 1100px;
+    height: 400px;
+    margin: auto;
+  } 
+}
+
+@media (max-width: 1110px) {
+  .App {
+    .chart {
+      width: 100% !important;
+    }
+  
+    .convertor {
+      .convertor-from {
+        margin: 0;
+        margin-bottom: 10px;
+      }
+    }
+  }
+}
+
+@media (max-width: 700px) {
+  .App {
+    .chart {
+      width: 100% !important;
+      margin-top: 50px;
+    }
+
+    .header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: fit-content;
+  
+      .header__actual-currencies {
+        margin-left: 0;
+        margin-top: 10px;
+        display: flex;
+        flex-wrap: wrap;
+      }
+    }
+  }
+}

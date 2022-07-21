@@ -1,0 +1,26 @@
+.header {
+  background: rgb(56, 104, 238);
+  height: 50px;
+  // color: rgb(82, 80, 80);
+  color: white;
+  display: flex;
+  align-items: center;
+
+  .header__title {
+    margin-left: 20px;
+  }
+
+  .header__actual-currencies {
+    margin-left: 100px;
+    font-weight: bold;
+    display: flex;
+
+    .header__actual-currency {
+      margin-left: 15px;
+
+      .header__actual-currency-name {
+        margin-right: 5px;
+      }
+    }
+  }
+}
