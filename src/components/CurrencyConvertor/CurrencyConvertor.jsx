@@ -7,8 +7,8 @@ import Select from "../../elements/Select/Select";
 export default function CurrencyConvertor({currencies}) {
   let [selectedFromCurrency, setSelectedFromCurrency] = useState('UAH')
   let [selectedToCurrency, setSelectedToCurrency] = useState('USD')
-  let [toValue, setToValue] = useState()
-  let [fromValue, setFromValue] = useState()
+  // let [toValue, setToValue] = useState()
+  // let [fromValue, setFromValue] = useState()
   let leftValueRef = useRef()
   let rightValueRef = useRef()
 
@@ -92,7 +92,6 @@ export default function CurrencyConvertor({currencies}) {
         <Select 
           currencies={currencies} 
           onSelectCurrency={currency => {
-            handleValueChange(leftValueRef.current.value, 'left')
             setSelectedFromCurrency(currency)
           }} 
         />
@@ -109,7 +108,6 @@ export default function CurrencyConvertor({currencies}) {
           currencies={currencies} 
           defaultValue={'USD'}
           onSelectCurrency={currency => {
-            handleValueChange(rightValueRef.current.value, 'right')
             setSelectedToCurrency(currency)
           }} 
         />

@@ -1,2 +1,2 @@
 import axios from "axios";
-export const _axios = axios.create({baseURL: 'http://localhost:3000/api/v1'})
+export const _axios = axios.create({baseURL: 'https://ccy-awd.herokuapp.com/api/v1'})
