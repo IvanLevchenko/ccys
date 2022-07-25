@@ -5,73 +5,59 @@ import './CurrencyConvertor.scss'
 import Select from "../../elements/Select/Select";
 
 export default function CurrencyConvertor({currencies}) {
-  let [selectedFromCurrency, setSelectedFromCurrency] = useState('UAH')
-  let [selectedToCurrency, setSelectedToCurrency] = useState('USD')
-  // let [toValue, setToValue] = useState()
-  // let [fromValue, setFromValue] = useState()
+  let [leftSelectedCurrency, setLeftSelectedCurrency] = useState('UAH')
+  let [rightSelectedCurrency, setRightSelectedCurrency] = useState('USD')
   let leftValueRef = useRef()
   let rightValueRef = useRef()
 
-  function handleValueChange(value, option) {
+  function handleValueChange(value, option, currency, toCurrency) {
     let result
     let isLeft = option == 'left'
 
     const priceOfCurrency = (curr) => {
       return currencies.find(ccy => ccy.ccy == curr).sale
     }
-
-    if(selectedFromCurrency == 'UAH' && selectedToCurrency !== 'UAH' && selectedToCurrency !== 'BTC') {
-      let price = priceOfCurrency(selectedToCurrency)
-      result = (!isLeft ? value / +price : +price * value)?.toPrecision() 
-    } else if(selectedFromCurrency !== 'UAH' && selectedToCurrency == 'UAH' && selectedFromCurrency !== 'BTC') {
-      let price = priceOfCurrency(selectedFromCurrency)
-      result = (!isLeft ? value / +price : +price * value)?.toPrecision()
-    } else if(selectedFromCurrency == selectedToCurrency) {
+    
+    if(currency == toCurrency) {
       result = value
+    } else if(currency == 'UAH') {
+      if(toCurrency == 'BTC') {
+        let priceUSD = priceOfCurrency('USD')
+        let priceBTC = priceOfCurrency('BTC')
+        result = (value / priceUSD) / priceBTC
+      } else {
+        let price = priceOfCurrency(toCurrency)
+        result = value / price
+      }
     } else {
-      if(selectedToCurrency == 'BTC' && selectedFromCurrency !== 'BTC') {
-        if(selectedFromCurrency == 'UAH') {
-          let price = priceOfCurrency('USD')
-          result = 
-            !isLeft 
-            ? (((value / +price)?.toPrecision()) / priceOfCurrency('BTC'))?.toPrecision()
-            : (priceOfCurrency('BTC') / ((value / +price)?.toPrecision()))?.toPrecision()
-        } else if(isLeft && selectedFromCurrency == 'USD' || !isLeft && selectedToCurrency == 'USD') {
-          let price = priceOfCurrency(selectedToCurrency)
-          result = (!isLeft ? value / +price : +price * value)?.toPrecision()
+      if(toCurrency == 'BTC') {
+        let priceUSD = priceOfCurrency('USD')
+        let priceBTC = priceOfCurrency('BTC')
+        if(currency == 'USD') {
+          result = value / priceBTC
+        } else if(currency == 'UAH') {
+          result = (value / priceUSD) / priceBTC
         } else {
-          let price = priceOfCurrency(selectedFromCurrency)
-          result = 
-            !isLeft 
-            ? (((+price * value) / priceOfCurrency('USD'))) / priceOfCurrency('BTC')
-            : priceOfCurrency('BTC') * (((+price * value) / priceOfCurrency('USD')))
+          result = ((value / priceOfCurrency(currency)) * priceUSD) / priceBTC
         }
-      } else if(selectedFromCurrency !== 'BTC' && selectedToCurrency !== 'BTC') {
-        let price = priceOfCurrency(selectedFromCurrency)
-        result = 
-          !isLeft 
-          ? (value * +price) / +priceOfCurrency(selectedToCurrency) 
-          : +priceOfCurrency(selectedToCurrency) / (+price / value)
-      } else if(selectedFromCurrency == 'BTC'){
-        if(selectedToCurrency == 'USD') {
-          let price = priceOfCurrency(selectedFromCurrency)
-          result = (!isLeft ? +price * value : value / +price)?.toPrecision()
-        } else if(selectedToCurrency == 'UAH') {
-          let price = priceOfCurrency('USD')
-          result = 
-            !isLeft
-            ? (priceOfCurrency(selectedFromCurrency) / (value / +price)?.toPrecision()).toPrecision()
-            : ((value / +price)?.toPrecision() / priceOfCurrency(selectedFromCurrency)).toPrecision()
+      } else {
+        if(currency == 'BTC') {
+          let priceBTC = priceOfCurrency('BTC')
+          let priceUSD = priceOfCurrency('USD')
+          if(toCurrency == 'USD') {
+            result = value * priceBTC
+          } else if(toCurrency == 'UAH') {
+            result = (value * priceUSD) * priceBTC
+          } else {
+            result = ((value / priceOfCurrency(toCurrency)) * priceUSD) * priceBTC
+          }
         } else {
-          let price = priceOfCurrency(selectedFromCurrency)
-          result = 
-            !isLeft 
-            ? (+price * (value * (priceOfCurrency('USD') / priceOfCurrency(selectedToCurrency))))?.toPrecision()
-            : ((value * (priceOfCurrency('USD') / priceOfCurrency(selectedToCurrency))) / +price)?.toPrecision()
+          let price = priceOfCurrency(currency)
+          result = toCurrency == 'UAH' ? value * price : (value * price) / priceOfCurrency(toCurrency)
         }
       }
-    } 
-
+    }
+    
     if(!isLeft) {
       rightValueRef.current.value = result
     } else {
@@ -87,12 +73,12 @@ export default function CurrencyConvertor({currencies}) {
           className="convertor__input" 
           ref={leftValueRef}
           placeholder="Enter value to convert" 
-          onChange={(e) => handleValueChange(e.target.value, 'right')}
+          onChange={(e) => handleValueChange(e.target.value, 'right', leftSelectedCurrency, rightSelectedCurrency)}
         />
         <Select 
           currencies={currencies} 
           onSelectCurrency={currency => {
-            setSelectedFromCurrency(currency)
+            setLeftSelectedCurrency(currency)
           }} 
         />
       </div>
@@ -100,7 +86,7 @@ export default function CurrencyConvertor({currencies}) {
         <input
           type="number" 
           ref={rightValueRef}
-          onChange={(e) => handleValueChange(e.target.value, 'left')}
+          onChange={(e) => handleValueChange(e.target.value, 'left', rightSelectedCurrency, leftSelectedCurrency)}
           className="convertor__input" 
           placeholder="Here you'll see a result " 
           />
@@ -108,7 +94,7 @@ export default function CurrencyConvertor({currencies}) {
           currencies={currencies} 
           defaultValue={'USD'}
           onSelectCurrency={currency => {
-            setSelectedToCurrency(currency)
+            setRightSelectedCurrency(currency)
           }} 
         />
       </div>
